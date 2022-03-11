@@ -48,9 +48,6 @@ def load(task_name, tokenizer, max_seq_length=256, is_id=False):
     train_dataset = list(map(preprocess_function, datasets['train'])) if 'train' in datasets and is_id else None
     dev_dataset = list(map(preprocess_function, datasets['validation'])) if 'validation' in datasets and is_id else None
     test_dataset = list(map(preprocess_function, datasets['test'])) if 'test' in datasets else None
-    print("--------")
-    print(train_dataset)
-    print("--------")
     return train_dataset, dev_dataset, test_dataset
 
 
@@ -144,6 +141,7 @@ def load_sst2():
     dev_dataset = datasets['validation']
     test_dataset = process('./data/sst2/test.data')
     datasets = {'train': train_dataset, 'validation': dev_dataset, 'test': test_dataset}
+    print(train_dataset[:1000])
     return datasets
 
 def load_clinc150():
