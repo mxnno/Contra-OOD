@@ -1,4 +1,5 @@
 import argparse
+from re import I
 import torch
 from tqdm import tqdm
 import numpy as np
@@ -20,6 +21,7 @@ task_to_labels = {
     'imdb': 2,
     '20ng': 20,
     'trec': 6,
+    'clinc150': 150
 }
 
 
@@ -56,7 +58,10 @@ def train(args, model, train_dataset, dev_dataset, test_dataset, benchmarks):
             wandb.log(results, step=num_steps)
 
     num_steps = 0
+    i = 0
     for epoch in range(int(args.num_train_epochs)):
+        i += 1
+        print("Epoche: " + str(i))
         model.zero_grad()
         for step, batch in enumerate(tqdm(train_dataloader)):
             model.train()
@@ -109,7 +114,7 @@ def evaluate(args, model, eval_dataset, tag="train"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name_or_path", default="roberta-large", type=str)
+    parser.add_argument("--model_name_or_path", default="roberta-base", type=str)
     parser.add_argument("--max_seq_length", default=256, type=int)
     parser.add_argument("--task_name", default="sst2", type=str)
 
@@ -154,12 +159,14 @@ def main():
         )
         model.to(0)
 
-    datasets = ['rte', 'sst2', 'mnli', '20ng', 'trec', 'imdb', 'wmt16', 'multi30k']
+    #datasets = ['rte', 'sst2', 'mnli', '20ng', 'trec', 'imdb', 'wmt16', 'multi30k']
+    datasets = ['20ng', 'trec']
     benchmarks = ()
 
     for dataset in datasets:
         if dataset == args.task_name:
             train_dataset, dev_dataset, test_dataset = load(dataset, tokenizer, max_seq_length=args.max_seq_length, is_id=True)
+            print("train_dataset: " + str(train_dataset))
         else:
             _, _, ood_dataset = load(dataset, tokenizer, max_seq_length=args.max_seq_length)
             benchmarks = (('ood_' + dataset, ood_dataset),) + benchmarks
