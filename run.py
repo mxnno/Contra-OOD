@@ -160,7 +160,7 @@ def main():
         model.to(0)
 
     #datasets = ['rte', 'sst2', 'mnli', '20ng', 'trec', 'imdb', 'wmt16', 'multi30k']
-    datasets = ['20ng', 'trec']
+    datasets = ['sst2', 'trec']
     benchmarks = ()
 
     for dataset in datasets:

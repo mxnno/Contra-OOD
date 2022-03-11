@@ -34,6 +34,8 @@ def load(task_name, tokenizer, max_seq_length=256, is_id=False):
         datasets = load_wmt16()
     elif task_name == 'multi30k':
         datasets = load_multi30k()
+    elif task_name == 'clinc150':
+        datasets = load_clinc150()
 
     def preprocess_function(examples):
         inputs = (
@@ -138,5 +140,21 @@ def load_sst2():
     train_dataset = datasets['train']
     dev_dataset = datasets['validation']
     test_dataset = process('./data/sst2/test.data')
+    print(dev_dataset)
+    print(train_dataset)
+    print(test_dataset)
+    datasets = {'train': train_dataset, 'validation': dev_dataset, 'test': test_dataset}
+    return datasets
+
+def load_clinc150():
+    datasets = load_dataset('trec')
+    train_dataset = datasets['train']
+    test_dataset = datasets['test']
+    idxs = list(range(len(train_dataset)))
+    random.shuffle(idxs)
+    num_reserve = int(len(train_dataset) * 0.1)
+    dev_dataset = [{'text': train_dataset[i]['text'], 'label': train_dataset[i]['label-coarse']} for i in idxs[-num_reserve:]]
+    train_dataset = [{'text': train_dataset[i]['text'], 'label': train_dataset[i]['label-coarse']} for i in idxs[:-num_reserve]]
+    test_dataset = [{'text': d['text'], 'label': d['label-coarse']} for d in test_dataset]
     datasets = {'train': train_dataset, 'validation': dev_dataset, 'test': test_dataset}
     return datasets
