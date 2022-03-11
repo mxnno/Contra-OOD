@@ -14,6 +14,7 @@ task_to_keys = {
     'wmt16': ("en", None),
     'multi30k': ("text", None),
     'clinc150': ("text", None),
+    'clinc150_OOD': ("text", None),
 }
 
 
@@ -36,6 +37,8 @@ def load(task_name, tokenizer, max_seq_length=256, is_id=False):
         datasets = load_multi30k()
     elif task_name == 'clinc150':
         datasets = load_clinc150()
+    elif task_name == 'clinc150_OOD':
+        datasets = load_clinc150_OOD()
 
     def preprocess_function(examples):
         inputs = (
@@ -141,18 +144,42 @@ def load_sst2():
     dev_dataset = datasets['validation']
     test_dataset = process('./data/sst2/test.data')
     datasets = {'train': train_dataset, 'validation': dev_dataset, 'test': test_dataset}
-    print(train_dataset[:1000])
     return datasets
 
 def load_clinc150():
-    datasets = load_dataset('trec')
-    train_dataset = datasets['train']
-    test_dataset = datasets['test']
-    idxs = list(range(len(train_dataset)))
-    random.shuffle(idxs)
-    num_reserve = int(len(train_dataset) * 0.1)
-    dev_dataset = [{'text': train_dataset[i]['text'], 'label': train_dataset[i]['label-coarse']} for i in idxs[-num_reserve:]]
-    train_dataset = [{'text': train_dataset[i]['text'], 'label': train_dataset[i]['label-coarse']} for i in idxs[:-num_reserve]]
-    test_dataset = [{'text': d['text'], 'label': d['label-coarse']} for d in test_dataset]
+
+    train_pfad = '/content/drive/MyDrive/Masterarbeit/Datensätze/clinic/small_10/getrennt/train/train.txt'
+    val_pfad = '/content/drive/MyDrive/Masterarbeit/Datensätze/clinic/small_10/getrennt/val/val.txt'
+    test_pfad = '/content/drive/MyDrive/Masterarbeit/Datensätze/clinic/small_10/getrennt/test/test.txt'
+    
+    def process(file_name):
+        examples = []
+        with open(file_name, 'r') as fh:
+            for line in fh:
+                line = line.strip()
+                examples.append(
+                    {'text': line, 'label': 0}
+                )
+        return examples
+    train_dataset = process(train_pfad)
+    dev_dataset = process(val_pfad)
+    test_dataset = process(test_pfad)
     datasets = {'train': train_dataset, 'validation': dev_dataset, 'test': test_dataset}
+    return datasets 
+
+
+def load_clinc150_OOD():
+
+    def process(file_name):
+        examples = []
+        with open(file_name, 'r') as fh:
+            for line in fh:
+                line = line.strip()
+                examples.append(
+                    {'text': line, 'label': 1}
+                )
+        return examples
+    test_dataset = process('/content/drive/MyDrive/Masterarbeit/Datensätze/clinic/small_10/getrennt/oos_test/oos_test.txt')    
+
+    datasets = {'test': test_dataset}
     return datasets

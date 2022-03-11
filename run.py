@@ -20,7 +20,8 @@ task_to_labels = {
     'imdb': 2,
     '20ng': 20,
     'trec': 6,
-    'clinc150': 150
+    'clinc150': 150,
+    'clinc150_OOD': 1
 }
 
 
@@ -29,6 +30,8 @@ task_to_metric = {
     'imdb': 'sst2',
     '20ng': 'mnli',
     'trec': 'mnli',
+    'clinc150': 'mnli',
+    'clinc150_OOD': 'mnli'
 }
 
 
@@ -159,7 +162,7 @@ def main():
         model.to(0)
 
     #datasets = ['rte', 'sst2', 'mnli', '20ng', 'trec', 'imdb', 'wmt16', 'multi30k']
-    datasets = ['sst2', 'trec']
+    datasets = ['clinc150', 'clinc150_OOD']
     benchmarks = ()
 
     for dataset in datasets:
