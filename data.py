@@ -2,8 +2,6 @@ import datasets
 from datasets import load_dataset
 import random
 
-from run import train
-
 datasets.logging.set_verbosity(datasets.logging.ERROR)
 
 task_to_keys = {

@@ -1,5 +1,4 @@
 import argparse
-from re import I
 import torch
 from tqdm import tqdm
 import numpy as np
