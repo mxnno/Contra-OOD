@@ -15,7 +15,7 @@ task_to_keys = {
     'imdb': ("text", None),
     'wmt16': ("en", None),
     'multi30k': ("text", None),
-    'clinc150': ("text", None)
+    'clinc150': ("text", None),
 }
 
 
